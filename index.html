@@ -17,7 +17,7 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Culture Tile Quiz - 35 Lushin culture tiles">
+<meta property="og:image:alt" content="Culture Tile Quiz">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Culture Tile Quiz">
@@ -174,6 +174,30 @@
     color: var(--accent-ink);
     box-shadow: var(--shadow-sm);
   }
+
+  /* ---- tag filters ---- */
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-top: -4px; }
+  .pill {
+    appearance: none;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .pill:hover { color: var(--ink); border-color: var(--ink-faint); }
+  .pill[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  .pill:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
   /* ---- progress ---- */
   .meter {
@@ -359,6 +383,8 @@
     <button class="seg" type="button" id="segRandom" data-order="random" aria-pressed="false">Random</button>
   </div>
 
+  <div class="filters" id="filters" role="group" aria-label="Filter by tag"></div>
+
   <div class="meter">
     <span id="counter">0 / 35</span>
     <span class="tallies">
@@ -404,7 +430,9 @@
 
 <script>
 (function () {
-  var DECK = [{"id":"001","title":"Spit on it. Stomp on it. Tell it it's stupid. Still has the same value.","tag":"Worth","df":1,"wall":35,"img":"tiles/001.jpg"},{"id":"002","title":"We like the original you at the very core.","tag":"Worth","df":2,"wall":1,"img":"tiles/002.jpg"},{"id":"003","title":"Learning from failure is essential to progress.","tag":"Failure","df":3,"wall":30,"img":"tiles/003.jpg"},{"id":"004","title":"Success is just failure that’s been played around with... a lot.","tag":"Failure","df":4,"wall":34,"img":"tiles/004.jpg"},{"id":"005","title":"Enthusiasm is shallow. Passion runs deep.","tag":"Mission","df":5,"wall":9,"img":"tiles/005.jpg"},{"id":"006","title":"It’s your birthright to matter. Purpose is how you make it happen.","tag":"Mission","df":6,"wall":13,"img":"tiles/006.jpg"},{"id":"007","title":"Life is too short not to do something that matters.","tag":"Mission","df":7,"wall":31,"img":"tiles/007.jpg"},{"id":"008","title":"Mission leads to money, not vice versa.","tag":"Mission","df":8,"wall":19,"img":"tiles/008.jpg"},{"id":"009","title":"The ripple effect... Intention → Making a difference → Success and money.","tag":"Mission","df":9,"wall":27,"img":"tiles/009.jpg"},{"id":"010","title":"Buy the decision.","tag":"Growth","df":10,"wall":29,"img":"tiles/010.jpg"},{"id":"011","title":"Create growth by creating the problem.","tag":"Growth","df":11,"wall":11,"img":"tiles/011.jpg"},{"id":"012","title":"Growth mindset begins with personal growth.","tag":"Growth","df":12,"wall":8,"img":"tiles/012.jpg"},{"id":"013","title":"Hunger is the best spice.","tag":"Growth","df":13,"wall":5,"img":"tiles/013.jpg"},{"id":"014","title":"Racing cars... When you push the limits, you crash more often. C’est la guerre.","tag":"Growth","df":14,"wall":23,"img":"tiles/014.jpg"},{"id":"015","title":"Risk... How much we got your back.","tag":"Growth","df":15,"wall":4,"img":"tiles/015.jpg"},{"id":"016","title":"Foundational... Stop whining. Start owning.","tag":"Ownership","df":16,"wall":17,"img":"tiles/016.jpg"},{"id":"017","title":"Leadership. Ownership.","tag":"Ownership","df":17,"wall":32,"img":"tiles/017.jpg"},{"id":"018","title":"Owners own their relationships. Employees rent them.","tag":"Ownership","df":18,"wall":6,"img":"tiles/018.jpg"},{"id":"019","title":"Ownership can only be accepted, not assigned.","tag":"Ownership","df":19,"wall":20,"img":"tiles/019.jpg"},{"id":"020","title":"Assume good intent.","tag":"Candor","df":20,"wall":14,"img":"tiles/020.jpg"},{"id":"021","title":"Being around strong people requires a thick skin.","tag":"Candor","df":21,"wall":21,"img":"tiles/021.jpg"},{"id":"022","title":"Feedback comes from the heart, not ego.","tag":"Candor","df":22,"wall":28,"img":"tiles/022.jpg"},{"id":"023","title":"Truth over harmony.","tag":"Candor","df":23,"wall":25,"img":"tiles/023.jpg"},{"id":"024","title":"Lift while we climb.","tag":"Sharpen Each Other","df":24,"wall":2,"img":"tiles/024.jpg"},{"id":"025","title":"People come to us to sharpen their sword, so we need to always be sharpening ours.","tag":"Sharpen Each Other","df":25,"wall":22,"img":"tiles/025.jpg"},{"id":"026","title":"When we level up, we elevate each other’s journey.","tag":"Sharpen Each Other","df":26,"wall":33,"img":"tiles/026.jpg"},{"id":"027","title":"From me to we.","tag":"We","df":27,"wall":18,"img":"tiles/027.jpg"},{"id":"028","title":"Nobody has all the answers. That’s why we have each other.","tag":"We","df":28,"wall":7,"img":"tiles/028.jpg"},{"id":"029","title":"One bad apple doesn’t write the rules.","tag":"We","df":29,"wall":12,"img":"tiles/029.jpg"},{"id":"030","title":"People are human, hence the constant need for forgiveness. Put it behind you and move on.","tag":"We","df":30,"wall":24,"img":"tiles/030.jpg"},{"id":"031","title":"We have fun!","tag":"We","df":31,"wall":16,"img":"tiles/031.jpg"},{"id":"032","title":"All models are wrong, but some are useful.","tag":"Perspective","df":32,"wall":3,"img":"tiles/032.jpg"},{"id":"033","title":"The best way to sell is to create experiences and meaning.","tag":"Selling","df":33,"wall":10,"img":"tiles/033.jpg"},{"id":"034","title":"Boss is not a useful term.","tag":"Hierarchy","df":34,"wall":26,"img":"tiles/034.jpg"},{"id":"035","title":"Hierarchical on the inside. Flat on the outside.","tag":"Hierarchy","df":35,"wall":15,"img":"tiles/035.jpg"}];
+  var DECK = [{"id":"001","title":"Spit on it. Stomp on it. Tell it it's stupid. Still has the same value.","tag":"Worth","ts":"worth","df":1,"wall":35,"img":"tiles/001.jpg"},{"id":"002","title":"We like the original you at the very core.","tag":"Worth","ts":"worth","df":2,"wall":1,"img":"tiles/002.jpg"},{"id":"003","title":"Learning from failure is essential to progress.","tag":"Failure","ts":"failure","df":3,"wall":30,"img":"tiles/003.jpg"},{"id":"004","title":"Success is just failure that’s been played around with... a lot.","tag":"Failure","ts":"failure","df":4,"wall":34,"img":"tiles/004.jpg"},{"id":"005","title":"Enthusiasm is shallow. Passion runs deep.","tag":"Mission","ts":"mission","df":5,"wall":9,"img":"tiles/005.jpg"},{"id":"006","title":"It’s your birthright to matter. Purpose is how you make it happen.","tag":"Mission","ts":"mission","df":6,"wall":13,"img":"tiles/006.jpg"},{"id":"007","title":"Life is too short not to do something that matters.","tag":"Mission","ts":"mission","df":7,"wall":31,"img":"tiles/007.jpg"},{"id":"008","title":"Mission leads to money, not vice versa.","tag":"Mission","ts":"mission","df":8,"wall":19,"img":"tiles/008.jpg"},{"id":"009","title":"The ripple effect... Intention → Making a difference → Success and money.","tag":"Mission","ts":"mission","df":9,"wall":27,"img":"tiles/009.jpg"},{"id":"010","title":"Buy the decision.","tag":"Growth","ts":"growth","df":10,"wall":29,"img":"tiles/010.jpg"},{"id":"011","title":"Create growth by creating the problem.","tag":"Growth","ts":"growth","df":11,"wall":11,"img":"tiles/011.jpg"},{"id":"012","title":"Growth mindset begins with personal growth.","tag":"Growth","ts":"growth","df":12,"wall":8,"img":"tiles/012.jpg"},{"id":"013","title":"Hunger is the best spice.","tag":"Growth","ts":"growth","df":13,"wall":5,"img":"tiles/013.jpg"},{"id":"014","title":"Racing cars... When you push the limits, you crash more often. C’est la guerre.","tag":"Growth","ts":"growth","df":14,"wall":23,"img":"tiles/014.jpg"},{"id":"015","title":"Risk... How much we got your back.","tag":"Growth","ts":"growth","df":15,"wall":4,"img":"tiles/015.jpg"},{"id":"016","title":"Foundational... Stop whining. Start owning.","tag":"Ownership","ts":"ownership","df":16,"wall":17,"img":"tiles/016.jpg"},{"id":"017","title":"Leadership. Ownership.","tag":"Ownership","ts":"ownership","df":17,"wall":32,"img":"tiles/017.jpg"},{"id":"018","title":"Owners own their relationships. Employees rent them.","tag":"Ownership","ts":"ownership","df":18,"wall":6,"img":"tiles/018.jpg"},{"id":"019","title":"Ownership can only be accepted, not assigned.","tag":"Ownership","ts":"ownership","df":19,"wall":20,"img":"tiles/019.jpg"},{"id":"020","title":"Assume good intent.","tag":"Candor","ts":"candor","df":20,"wall":14,"img":"tiles/020.jpg"},{"id":"021","title":"Being around strong people requires a thick skin.","tag":"Candor","ts":"candor","df":21,"wall":21,"img":"tiles/021.jpg"},{"id":"022","title":"Feedback comes from the heart, not ego.","tag":"Candor","ts":"candor","df":22,"wall":28,"img":"tiles/022.jpg"},{"id":"023","title":"Truth over harmony.","tag":"Candor","ts":"candor","df":23,"wall":25,"img":"tiles/023.jpg"},{"id":"024","title":"Lift while we climb.","tag":"Sharpen Each Other","ts":"sharpen-each-other","df":24,"wall":2,"img":"tiles/024.jpg"},{"id":"025","title":"People come to us to sharpen their sword, so we need to always be sharpening ours.","tag":"Sharpen Each Other","ts":"sharpen-each-other","df":25,"wall":22,"img":"tiles/025.jpg"},{"id":"026","title":"When we level up, we elevate each other’s journey.","tag":"Sharpen Each Other","ts":"sharpen-each-other","df":26,"wall":33,"img":"tiles/026.jpg"},{"id":"027","title":"From me to we.","tag":"We","ts":"we","df":27,"wall":18,"img":"tiles/027.jpg"},{"id":"028","title":"Nobody has all the answers. That’s why we have each other.","tag":"We","ts":"we","df":28,"wall":7,"img":"tiles/028.jpg"},{"id":"029","title":"One bad apple doesn’t write the rules.","tag":"We","ts":"we","df":29,"wall":12,"img":"tiles/029.jpg"},{"id":"030","title":"People are human, hence the constant need for forgiveness. Put it behind you and move on.","tag":"We","ts":"we","df":30,"wall":24,"img":"tiles/030.jpg"},{"id":"031","title":"We have fun!","tag":"We","ts":"we","df":31,"wall":16,"img":"tiles/031.jpg"},{"id":"032","title":"All models are wrong, but some are useful.","tag":"Perspective","ts":"perspective","df":32,"wall":3,"img":"tiles/032.jpg"},{"id":"033","title":"The best way to sell is to create experiences and meaning.","tag":"Selling","ts":"selling","df":33,"wall":10,"img":"tiles/033.jpg"},{"id":"034","title":"Boss is not a useful term.","tag":"Hierarchy","ts":"hierarchy","df":34,"wall":26,"img":"tiles/034.jpg"},{"id":"035","title":"Hierarchical on the inside. Flat on the outside.","tag":"Hierarchy","ts":"hierarchy","df":35,"wall":15,"img":"tiles/035.jpg"}];
+
+  var TAGS = [{"label":"Worth","slug":"worth"},{"label":"Failure","slug":"failure"},{"label":"Mission","slug":"mission"},{"label":"Growth","slug":"growth"},{"label":"Ownership","slug":"ownership"},{"label":"Candor","slug":"candor"},{"label":"Sharpen Each Other","slug":"sharpen-each-other"},{"label":"We","slug":"we"},{"label":"Perspective","slug":"perspective"},{"label":"Selling","slug":"selling"},{"label":"Hierarchy","slug":"hierarchy"}];
 
   var root = document.documentElement;
   var els = {
@@ -444,7 +472,8 @@
     firstTry: 0,
     missedIds: [],
     revealed: false,
-    subset: null
+    subset: null,
+    tag: ''
   };
 
   function shuffle(a) {
@@ -457,6 +486,9 @@
 
   function buildOrder(mode, subset) {
     var pool = DECK.slice();
+    if (state.tag) {
+      pool = pool.filter(function (c) { return c.ts === state.tag; });
+    }
     if (subset && subset.length) {
       pool = pool.filter(function (c) { return subset.indexOf(c.id) !== -1; });
     }
@@ -536,7 +568,8 @@
     els.doneView.hidden = false;
     els.counter.textContent = state.total + ' / ' + state.total;
     els.barFill.style.width = '100%';
-    els.doneMode.textContent = MODE_LABEL[state.mode];
+    var activeTag = TAGS.filter(function (t) { return t.slug === state.tag; })[0];
+    els.doneMode.textContent = activeTag ? activeTag.label : MODE_LABEL[state.mode];
 
     var note = state.firstTry === state.total
       ? 'clean on the first look'
@@ -603,6 +636,43 @@
     }
   });
 
+  /* ---- tag filters ---- */
+  var filtersEl = document.getElementById('filters');
+
+  function paintPills() {
+    Array.prototype.forEach.call(filtersEl.children, function (b) {
+      b.setAttribute('aria-pressed', String((b.dataset.tag || '') === state.tag));
+    });
+  }
+
+  [{ label: 'All', slug: '' }].concat(TAGS).forEach(function (t) {
+    var b = document.createElement('button');
+    b.className = 'pill';
+    b.type = 'button';
+    b.textContent = t.label;
+    if (t.slug) b.dataset.tag = t.slug;
+    b.addEventListener('click', function () {
+      if (state.tag === (t.slug || '')) return;
+      state.tag = t.slug || '';
+      try { location.hash = state.tag; } catch (err) {}
+      paintPills();
+      startRound(state.mode, null);
+    });
+    filtersEl.appendChild(b);
+  });
+
+  function tagFromHash() {
+    var h = (location.hash || '').replace(/^#/, '');
+    return TAGS.some(function (t) { return t.slug === h; }) ? h : '';
+  }
+  window.addEventListener('hashchange', function () {
+    var h = tagFromHash();
+    if (h === state.tag) return;
+    state.tag = h;
+    paintPills();
+    startRound(state.mode, null);
+  });
+
   /* ---- theme: defaults to light ---- */
   function applyTheme(t) {
     root.setAttribute('data-theme', t);
@@ -615,6 +685,8 @@
     applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
   });
 
+  state.tag = tagFromHash();
+  paintPills();
   startRound('df', null);
 
   /* warm the cache so flipping never waits on a download */
